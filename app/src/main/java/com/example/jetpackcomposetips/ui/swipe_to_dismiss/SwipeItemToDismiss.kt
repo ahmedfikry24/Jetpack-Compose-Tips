@@ -26,9 +26,10 @@ import kotlinx.coroutines.launch
 fun SwipeItemToDismiss(
     modifier: Modifier = Modifier,
     enableGesture: Boolean = true,
-    enableSwipeRight: Boolean = true,
-    enableSwipeLeft: Boolean = true,
+    enableSwipeStartToEnd: Boolean = true,
+    enableSwipeEndToStart: Boolean = true,
     colors: SwipeItemColors = DefaultSwipeItemToDismiss.colors(),
+    positionalThreshold: Float = (LocalConfiguration.current.screenWidthDp * 2 / 3).toFloat(),
     onSwipeRight: () -> Unit = {},
     onSwipeLeft: () -> Unit = {},
     backgroundContent: @Composable RowScope.() -> Unit,
@@ -37,7 +38,6 @@ fun SwipeItemToDismiss(
     var offsetX by remember { mutableFloatStateOf(0f) }
     val animatedOffsetX by animateFloatAsState(targetValue = offsetX, label = "offsetTransition")
     val scope = rememberCoroutineScope()
-    val dismissThreshold = (LocalConfiguration.current.screenWidthDp / 3).toFloat()
     val exitScreenWidth = (LocalConfiguration.current.screenWidthDp * 2).toFloat()
 
     Box(modifier = modifier.wrapContentSize()) {
@@ -68,12 +68,24 @@ fun SwipeItemToDismiss(
                         detectHorizontalDragGestures(
                             onHorizontalDrag = { change, dragAmount ->
                                 change.consume()
-                                if ((dragAmount > 0 && enableSwipeRight) || (dragAmount < 0 && enableSwipeLeft))
+                                if ((dragAmount > 0 && enableSwipeStartToEnd) || (dragAmount < 0 && enableSwipeEndToStart))
                                     offsetX += dragAmount
+
+                                when {
+                                    offsetX > 0f -> {
+                                        if (dragAmount < 0f)
+                                            offsetX += dragAmount
+                                    }
+
+                                    offsetX < 0f -> {
+                                        if (dragAmount > 0f)
+                                            offsetX += dragAmount
+                                    }
+                                }
                             },
                             onDragEnd = {
                                 when {
-                                    offsetX > dismissThreshold && enableSwipeRight -> {
+                                    offsetX > positionalThreshold && enableSwipeStartToEnd -> {
                                         scope.launch {
                                             offsetX = exitScreenWidth
                                             onSwipeRight()
@@ -82,7 +94,7 @@ fun SwipeItemToDismiss(
                                         }
                                     }
 
-                                    offsetX < -dismissThreshold && enableSwipeLeft -> {
+                                    offsetX < -positionalThreshold && enableSwipeEndToStart -> {
                                         scope.launch {
                                             offsetX = -exitScreenWidth
                                             onSwipeLeft()
@@ -91,7 +103,7 @@ fun SwipeItemToDismiss(
                                         }
                                     }
 
-                                    else -> scope.launch { offsetX = 0f }
+                                    else -> offsetX = 0f
                                 }
                             }
                         )
