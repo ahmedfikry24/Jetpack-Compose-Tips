@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jetpackcomposetips.ui.list_installed_apps.ListInstalledApps
 import com.example.jetpackcomposetips.ui.swipe_to_dismiss.SwipeItemToDismiss
 import com.example.jetpackcomposetips.ui.theme.JetpackComposeTipsTheme
 
@@ -31,49 +32,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JetpackComposeTipsTheme {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp)
-                ) {
-                    SwipeItemToDismiss(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(4.dp)),
-                        backgroundContent = {
-                            Icon(
-                                modifier = Modifier.padding(16.dp),
-                                imageVector = Icons.Outlined.Delete,
-                                contentDescription = null,
-                                tint = Color.White
-                            )
-                        }
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.White)
-                                .border(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.outlineVariant,
-                                    RoundedCornerShape(4.dp)
-                                ),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            Text(
-                                "ahmed",
-                                fontSize = 16.sp,
-                                color = Color.Black
-                            )
-                            Text(
-                                "description",
-                                fontSize = 12.sp,
-                                color = Color.Black
-                            )
-                        }
-                    }
-                }
+                ListInstalledApps()
             }
         }
     }
