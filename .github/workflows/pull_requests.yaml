@@ -1,6 +1,9 @@
 name: try run test
 
 on:
+  push:
+    branches:
+      - ci-cd
   pull_request:
     branches:
       - main
