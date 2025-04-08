@@ -1,0 +1,27 @@
+name: try run test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+
+  build:
+    runs-on: ubuntu_latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setUp JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: gran excute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: clean build
+        run: ./gradlew clean test
