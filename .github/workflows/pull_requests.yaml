@@ -10,7 +10,7 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu_latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -26,4 +26,5 @@ jobs:
         run: chmod +x gradlew
 
       - name: run check function
-        run: ./gradlew  run -PainClass=RegularTest.kt
+        run: |
+          kotlin -e "$(curl -s https://github.com/ahmedfikry24/Jetpack-Compose-Tips/blob/ci-cd/app/src/main/java/com/example/jetpackcomposetips/RegularTest.kt | grep -A 10 'fun check()')"
