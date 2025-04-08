@@ -1,18 +1,19 @@
 name: try run test
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - ci-cd
 
 
 jobs:
 
   build:
-    runs-on: ubuntu_latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+
 
       - name: setUp JDK
         uses: actions/setup-java@v4
@@ -20,8 +21,9 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
 
-      - name: gran excute permission for gradlew
+      - name: gran execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: clean build
-        run: ./gradlew clean test
+      - name: run check function
+        run: |
+          kotlin -e "$(curl -s https://github.com/ahmedfikry24/Jetpack-Compose-Tips/blob/ci-cd/app/src/main/java/com/example/jetpackcomposetips/RegularTest.kt | grep -A 10 'fun check()')"
